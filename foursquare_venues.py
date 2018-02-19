@@ -62,7 +62,7 @@ with open('foursquare_venues.csv', 'w', encoding='utf-8') as f:
     for venue_id in venue_ids_list:
         r = requests.get(
             'https://api.foursquare.com/v2/venues/{}'.format(venue_id),
-            params=search_params)
+            params=venue_params)
         venue = r.json()['response']['venue']
 
         id = venue_id
@@ -77,8 +77,11 @@ with open('foursquare_venues.csv', 'w', encoding='utf-8') as f:
         url_venue = venue.get('url', '')
         url_foursquare = venue.get('shortUrl', '')
 
+        # categories is an empty list if there are none.
         categories = venue.get('categories', '')
-        if len(categories) > 0:
+        if len(categories) == 0:
+            categories = ''
+        else:
             categories = ', '.join([x['name'] for x in categories])
 
         writer.writerow([id, name, categories, lat, long, num_checkins,
