@@ -41,7 +41,8 @@ for lat in lats:
 
         time.sleep(0.1)
 
-print('{} Unique Venues Scraped.'.format(len(venue_ids)))
+print('{} Unique Venues Scraped: {}.'.format(
+    len(venue_ids), datetime.datetime.now()))
 
 # Get and process the data for each unique Venue.
 
@@ -52,6 +53,7 @@ venue_params = {
 }
 
 venue_ids_list = list(venue_ids)   # cannot iterate a set, so must coerce list
+venue_count = 0
 
 with open('foursquare_venues.csv', 'w', encoding='utf-8') as f:
     writer = csv.writer(f)
@@ -87,5 +89,11 @@ with open('foursquare_venues.csv', 'w', encoding='utf-8') as f:
         writer.writerow([id, name, categories, lat, long, num_checkins,
                          num_likes, price, rating,
                          num_ratings, url_venue, url_foursquare])
+
+        venue_count += 1
+
+        if venue_count % 1000 == 0:
+            print('{} Venues Processed: {}'.format(venue_count,
+                                                   datetime.datetime.now()))
 
         time.sleep(0.1)
