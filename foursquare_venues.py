@@ -65,35 +65,37 @@ with open('foursquare_venues.csv', 'w', encoding='utf-8') as f:
         r = requests.get(
             'https://api.foursquare.com/v2/venues/{}'.format(venue_id),
             params=venue_params)
-        venue = r.json()['response']['venue']
 
-        id = venue_id
-        name = venue.get('name', '')
-        lat = venue.get('location', {}).get('lat', '')
-        long = venue.get('location', {}).get('lng', '')
-        num_checkins = venue.get('stats', {}).get('checkinsCount', '')
-        num_likes = venue.get('likes', {}).get('count', '')
-        rating = venue.get('rating', '')
-        num_ratings = venue.get('ratingSignals', '')
-        price = venue.get('price', {}).get('tier')
-        url_venue = venue.get('url', '')
-        url_foursquare = venue.get('shortUrl', '')
+        if 'venue' in r.json()['response']:
+            venue = r.json()['response']['venue']
 
-        # categories is an empty list if there are none.
-        categories = venue.get('categories', '')
-        if len(categories) == 0:
-            categories = ''
-        else:
-            categories = ', '.join([x['name'] for x in categories])
+            id = venue_id
+            name = venue.get('name', '')
+            lat = venue.get('location', {}).get('lat', '')
+            long = venue.get('location', {}).get('lng', '')
+            num_checkins = venue.get('stats', {}).get('checkinsCount', '')
+            num_likes = venue.get('likes', {}).get('count', '')
+            rating = venue.get('rating', '')
+            num_ratings = venue.get('ratingSignals', '')
+            price = venue.get('price', {}).get('tier')
+            url_venue = venue.get('url', '')
+            url_foursquare = venue.get('shortUrl', '')
 
-        writer.writerow([id, name, categories, lat, long, num_checkins,
-                         num_likes, price, rating,
-                         num_ratings, url_venue, url_foursquare])
+            # categories is an empty list if there are none.
+            categories = venue.get('categories', '')
+            if len(categories) == 0:
+                categories = ''
+            else:
+                categories = ', '.join([x['name'] for x in categories])
 
-        venue_count += 1
+            writer.writerow([id, name, categories, lat, long, num_checkins,
+                             num_likes, price, rating,
+                             num_ratings, url_venue, url_foursquare])
 
-        if venue_count % 1000 == 0:
-            print('{} Venues Processed: {}'.format(venue_count,
-                                                   datetime.datetime.now()))
+            venue_count += 1
+
+            if venue_count % 1000 == 0:
+                print('{} Retrieved: {}'.format(venue_count,
+                                                datetime.datetime.now()))
 
         time.sleep(0.1)
