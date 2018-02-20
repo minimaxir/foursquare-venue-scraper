@@ -27,6 +27,7 @@ search_params = {
 }
 
 venue_ids = set()
+search_count = 0
 
 for lat in lats:
     for long in longs:
@@ -34,10 +35,18 @@ for lat in lats:
 
         r = requests.get('https://api.foursquare.com/v2/venues/search',
                          params=search_params)
-        venues = r.json()['response']['venues']
 
-        for venue in venues:
-            venue_ids.add(venue['id'])
+        if 'venues' in r.json()['response']:
+            venues = r.json()['response']['venues']
+
+            for venue in venues:
+                venue_ids.add(venue['id'])
+
+        search_count += 1
+
+        if search_count % 1000 == 0:
+            print('{} Searched: {}'.format(search_count,
+                                           datetime.datetime.now()))
 
         time.sleep(0.1)
 
@@ -97,5 +106,9 @@ with open('foursquare_venues.csv', 'w', encoding='utf-8') as f:
             if venue_count % 1000 == 0:
                 print('{} Retrieved: {}'.format(venue_count,
                                                 datetime.datetime.now()))
+
+            # the venues/* endpoint has a rate limit of 5000 requests/hr
+            if venue_count % 5000 == 0:
+                time.sleep(60*60)
 
         time.sleep(0.1)
