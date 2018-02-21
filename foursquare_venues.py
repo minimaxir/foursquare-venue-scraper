@@ -101,14 +101,14 @@ with open('foursquare_venues.csv', 'w', encoding='utf-8') as f:
                              num_likes, price, rating,
                              num_ratings, url_venue, url_foursquare])
 
-            venue_count += 1
+        venue_count += 1
 
-            if venue_count % 1000 == 0:
-                print('{} Retrieved: {}'.format(venue_count,
-                                                datetime.datetime.now()))
+        if venue_count % 1000 == 0:
+            print('{} Retrieved: {}'.format(venue_count,
+                                            datetime.datetime.now()))
 
-            # the venues/* endpoint has a rate limit of 5000 requests/hr
-            if venue_count % 5000 == 0:
-                time.sleep(60*60)
+        # the venues/* endpoint has a rate limit of 5000 requests/hr
+        if venue_count % 5000 == 0:
+            time.sleep(60*60)
 
         time.sleep(0.1)
