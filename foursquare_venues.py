@@ -7,21 +7,20 @@ import csv
 # Get all Venue IDs for venues within the bounding box.
 
 
-def get_intervals(lower, upper, length):
-    # https://stackoverflow.com/a/6683724/9314418
-    return([lower + x*(upper - lower)/length for x in range(length)])
+def get_delta(lower, upper, length):
+    return (upper - lower)/length
 
 
 with open("config.yaml", "r") as f:
     cfg = yaml.load(f)
 
-lats = get_intervals(cfg['top_bound'], cfg['bottom_bound'], cfg['grid_size'])
-longs = get_intervals(cfg['left_bound'], cfg['right_bound'], cfg['grid_size'])
+lat_delta = get_delta(cfg['top_bound'], cfg['bottom_bound'], cfg['grid_size'])
+long_delta = get_delta(cfg['left_bound'], cfg['right_bound'], cfg['grid_size'])
 
 search_params = {
     'client_id': cfg['client_id'],
     'client_secret': cfg['client_secret'],
-    'radius': 250,
+    'intent': 'browse',
     'limit': 50,
     'v': '20180218'
 }
@@ -29,9 +28,14 @@ search_params = {
 venue_ids = set()
 search_count = 0
 
-for lat in lats:
-    for long in longs:
-        search_params.update({'ll': '{},{}'.format(lat, long)})
+for lat in range(cfg['grid_size']):
+    for long in range(cfg['grid_size']):
+        ne_lat = cfg['top_bound'] + lat * lat_delta
+        ne_long = cfg['left_bound'] + (long+1) * long_delta
+
+        search_params.update({'ne': '{},{}'.format(ne_lat, ne_long),
+                              'sw': '{},{}'.format(ne_lat + lat_delta,
+                                                   ne_long - long_delta)})
 
         r = requests.get('https://api.foursquare.com/v2/venues/search',
                          params=search_params)
@@ -47,6 +51,10 @@ for lat in lats:
         if search_count % 1000 == 0:
             print('{} Searched: {}'.format(search_count,
                                            datetime.datetime.now()))
+
+        # gets fussy when more than 5000 requests/hr
+        if search_count % 5000 == 0:
+            time.sleep(60*60)
 
         time.sleep(0.1)
 
