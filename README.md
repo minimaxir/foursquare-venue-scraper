@@ -2,11 +2,11 @@
 
 ![](sf_map_avg_rating.png)
 
-A Foursquare data scraper that gathers all venues within a specified geographic area. The data retrieved can then be used for statistical analysis and fun data visualizations.
+A [Foursquare](https://foursquare.com) data scraper that gathers all venues within a specified geographic area. The data retrieved can then be used for statistical analysis and fun data visualizations.
 
 ## Overview
 
-The script queries the official Foursquare API (with a user-provided `client_id` and `client_secret`) to search for venue information, and then query additional metadata for each unique venue.
+The script queries the official [Foursquare API](https://developer.foursquare.com/docs) (with a user-provided `client_id` and `client_secret` from a Foursquare application) to search for venues, and then query additional metadata for each unique venue.
 
 The specified area is defined by a geographic bounding box (by latitude and longitude). Since the API can only return up to 50 venues per search, the bounding box is broken into sub-bounding boxes as a form of grid search (by default, the `grid_size` is 100, so 100x100=10000 searches total).
 
@@ -37,7 +37,7 @@ Both of the API endpoints used in this script have a **rate limit of 5,000 reque
 
 ## Foursquare Terms of Use
 
-This script follows the specifications of the Foursquare API, and does not circumvent the API and its rate limits. If you're using the data for things other than data analysis, make sure to follow the [Foursquare Terms of Use](https://developer.foursquare.com/docs/terms-of-use/overview).
+This script follows the specifications of the Foursquare API, and does not circumvent the API and its rate limits. If you're using the data for projects other than data analysis, make sure to follow the [Foursquare Terms of Use](https://developer.foursquare.com/docs/terms-of-use/overview).
 
 ## Maintainer
 
