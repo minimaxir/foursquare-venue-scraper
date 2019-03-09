@@ -1,3 +1,5 @@
+**UPDATE MARCH 2019**: This repo is ***depreciated*** due to API changes by Foursquare to stop scraping of this particular metadata. This repository will remain up for posterity.
+
 # foursquare-venue-scraper
 
 ![](sf_map_avg_rating.png)
